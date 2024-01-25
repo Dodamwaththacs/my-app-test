@@ -3,10 +3,10 @@ spring:
       oauth2:
         resourceserver:
           jwt:
-            issuer-uri: http://keycloak:8080/realms/myrealm
+            issuer-uri: http://keycloak-hp:8080/realms/myrealm
 
   datasource:
-      url: jdbc:mysql://mysql:3306/my-app-test?serverTimezone=UTC
+      url: jdbc:mysql://mysql-hp:3306/my-app-test?serverTimezone=UTC
       username: root
       password: P4ssword!
       dbcp2:
@@ -31,5 +31,5 @@ springdoc:
   pathsToMatch: /api/**
 
 server:
-  port: 8081
+  port: 21001
   #chamika
