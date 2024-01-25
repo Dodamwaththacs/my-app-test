@@ -33,3 +33,34 @@ springdoc:
 server:
   port: 21001
   #chamika
+
+management:
+  tracing:
+    sampling:
+      probability: 1.0
+  endpoints:
+    web:
+      exposure:
+        include: "prometheus"
+  endpoint:
+    health:
+      show-details: always
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: "*"
+
+  metrics:
+    distribution:
+      percentiles-histogram:
+        http:
+          server:
+            requests: true
+
+logging:
+  level:
+    root: info
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+
