@@ -41,7 +41,7 @@ management:
   endpoints:
     web:
       exposure:
-        include: "prometheus"
+        include: prometheus
   endpoint:
     health:
       show-details: always
@@ -49,7 +49,7 @@ management:
         enabled: true
       group:
         liveness:
-          include: "*"
+            include: '*'
 
   metrics:
     distribution:
