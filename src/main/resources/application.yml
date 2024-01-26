@@ -35,6 +35,9 @@ server:
   #chamika
 
 management:
+  zipkin:
+    tracing:
+      endpoint: http://my-app-test-tempo-1:9411/api/v2/spans
   tracing:
     sampling:
       probability: 1.0

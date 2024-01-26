@@ -1,15 +1,15 @@
 package io.test_group.my_app_test.service;
 
+import java.util.List;
+
+import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
+
+import io.micrometer.observation.annotation.Observed;
 import io.test_group.my_app_test.domain.User;
-import io.test_group.my_app_test.model.Gender;
 import io.test_group.my_app_test.model.UserDTO;
 import io.test_group.my_app_test.repos.UserRepository;
 import io.test_group.my_app_test.util.NotFoundException;
-
-import java.time.LocalDate;
-import java.util.List;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Service;
 
 
 @Service
@@ -21,6 +21,9 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
+    @Observed(name = "users.find-all",
+            contextualName = "getting-user-list",
+            lowCardinalityKeyValues = {"userType", "userTypeAdmin"})
     public List<UserDTO> findAll() {
         /*
         UserDTO obj1 = new UserDTO();
@@ -41,19 +44,27 @@ public class UserService {
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .toList();
     }
-
+    @Observed(name = "users.find-by-id",
+    contextualName = "getting-user-information",
+    lowCardinalityKeyValues = {"userType", "userTypeAdmin"})
     public UserDTO get(final Long id) {
         return userRepository.findById(id)
                 .map(user -> mapToDTO(user, new UserDTO()))
                 .orElseThrow(NotFoundException::new);
     }
 
+    @Observed(name = "users.create",
+    contextualName = "create-user",
+    lowCardinalityKeyValues = {"userType", "userTypeAdmin"})
     public Long create(final UserDTO userDTO) {
         final User user = new User();
         mapToEntity(userDTO, user);
         return userRepository.save(user).getId();
     }
 
+    @Observed(name = "users.update",
+    contextualName = "update-user",
+    lowCardinalityKeyValues = {"userType", "userTypeAdmin"})
     public void update(final Long id, final UserDTO userDTO) {
         final User user = userRepository.findById(id)
                 .orElseThrow(NotFoundException::new);
@@ -61,6 +72,9 @@ public class UserService {
         userRepository.save(user);
     }
 
+    @Observed(name = "users.delete",
+    contextualName = "delete-user",
+    lowCardinalityKeyValues = {"userType", "userTypeAdmin"})
     public void delete(final Long id) {
         userRepository.deleteById(id);
     }
