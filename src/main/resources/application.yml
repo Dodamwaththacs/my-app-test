@@ -41,15 +41,17 @@ management:
   endpoints:
     web:
       exposure:
-        include: prometheus
+        include: prometheus,metrics,info,health,loggers
   endpoint:
+    metrics:
+      enabled: true
     health:
       show-details: always
       probes:
         enabled: true
       group:
         liveness:
-            include: '*'
+            include: "*"
 
   metrics:
     distribution:

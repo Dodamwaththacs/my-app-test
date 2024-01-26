@@ -24,7 +24,7 @@ public class SecurityConfig {
         log.info("SecurityConfig.filterChain() called");
 
         http.authorizeHttpRequests(authz -> authz
-                        .requestMatchers(new AntPathRequestMatcher("/actuator/**"))
+                        /* .requestMatchers(new AntPathRequestMatcher("/actuator/**"))
                         .permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html"))
                         .permitAll()
@@ -41,11 +41,12 @@ public class SecurityConfig {
                         // .hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/**")
                         .authenticated()
-                        // .hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
+                        // .hasAnyAuthority(ROLE_USER, ROLE_ADMIN)*/
                         .anyRequest()
-                        .authenticated())
+                        .permitAll())
+                        //.authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-        log.info("RBAC for API not implemented. Use a separate realm for API security.");
+        log.info("RBAC for API removed for testing prometheus.");
 
         return http.build();
     }
