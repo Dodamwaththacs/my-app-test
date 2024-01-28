@@ -20,6 +20,9 @@ scrape_configs:
       metrics_path: '/actuator/prometheus'
       static_configs:
         - targets: ['my-app-test-my-app-test-1:21001']
+# Sets the `Authorization` header on every scrape request with the bearer token
+# read from the configured file. It is mutually exclusive with `bearer_token`.
+      bearer_token_file: /app/tokens/token.txt
     - job_name: node
       static_configs:
       - targets:

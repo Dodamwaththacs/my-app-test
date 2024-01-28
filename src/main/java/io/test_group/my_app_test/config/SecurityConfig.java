@@ -24,11 +24,21 @@ public class SecurityConfig {
         log.info("SecurityConfig.filterChain() called");
 
         http.authorizeHttpRequests(authz -> authz
-                        /* .requestMatchers(new AntPathRequestMatcher("/actuator/**"))
+                        .requestMatchers(new AntPathRequestMatcher("/actuator/**"))
                         .permitAll()
                         .requestMatchers(new AntPathRequestMatcher("/swagger-ui.html"))
                         .permitAll()
-                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/index.html"))
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui**"))
+                        .permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-ui/**"))
+                        .permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/v2/api-docs"))
+                        .permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/swagger-resources/**"))
+                        .permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/v3/api-docs/**"))
+                        .permitAll()
+                        .requestMatchers(new AntPathRequestMatcher("/api-docs/**"))
                         .permitAll()
                         .requestMatchers(HttpMethod.PUT, "/**")
                         .authenticated()
@@ -41,12 +51,12 @@ public class SecurityConfig {
                         // .hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
                         .requestMatchers(HttpMethod.DELETE, "/**")
                         .authenticated()
-                        // .hasAnyAuthority(ROLE_USER, ROLE_ADMIN)*/
+                        // .hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
                         .anyRequest()
-                        .permitAll())
-                        //.authenticated())
+                        //.permitAll())
+                        .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
-        log.info("RBAC for API removed for testing prometheus.");
+        //log.info("RBAC for API removed for testing prometheus."); HFvkjVaPEYu5H0MY32rxzg90OkB44aut
 
         return http.build();
     }

@@ -15,11 +15,14 @@ services:
       image: quay.io/keycloak/keycloak:22.0.1
       command:
         - "start-dev"
+        - "--hostname-port=8080"
       ports:
         - "18080:8080"
+        - "18443:8443"
       environment:
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: password
+        KC_HOSTNAME: keycloak-hp
         KC_DB: mysql
         KC_DB_URL_HOST: mysql-hp
         KC_DB_URL_DATABASE: keycloak
@@ -38,8 +41,11 @@ services:
     volumes:
         - ./docker/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
         - ./docker/prometheus/rule.yml:/etc/prometheus/rule.yml:ro
+        - token_volume:/app/tokens
     ports:
         - "9090:9090"
+    depends_on:
+        - token_retrieval
     
   node-exporter:
     image: prom/node-exporter
@@ -85,6 +91,17 @@ services:
         - GF_AUTH_DISABLE_LOGIN_FORM=true
     ports:
         - "3000:3000"
+
+  token_retrieval:
+    build:
+      context: .
+      dockerfile: Dockerfile_token_retrieval
+    volumes:
+      - ./token_retrieval_script.py:/app/token_retrieval_script.py
+      - token_volume:/app/tokens
+    depends_on:
+      - keycloak-hp
+  
   my-app-test:
     build:
       dockerfile: Dockerfile
@@ -98,6 +115,7 @@ services:
         - node-exporter
         - alert-manager
         - tempo
+        - token_retrieval
 
 volumes:
     mysql_data:
@@ -107,5 +125,7 @@ volumes:
     promtail_data:
       driver: local
     tempo_data:
+      driver: local
+    token_volume:
       driver: local
 
