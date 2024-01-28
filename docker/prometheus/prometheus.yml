@@ -30,7 +30,7 @@ scrape_configs:
     - job_name: 'keycloak'
       scrape_interval: 5s
       static_configs:
-        - targets: ['keycloak-hp:32301']
+        - targets: ['keycloak-hp:8080']
     - job_name: 'mysql'
       static_configs:
         - targets: ['mysql-hp-exporter:9104'] # Replace 'mysql_host' with your MySQL container hostname/IP

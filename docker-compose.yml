@@ -1,3 +1,4 @@
+version: '4.0.1'
 services:
   mysql-hp:
     container_name: mysql-hp
@@ -47,6 +48,8 @@ services:
         - "9090:9090"
     depends_on:
         - token_retrieval
+        - mysql-hp-exporter
+        - keycloak-hp
     
   node-exporter:
     image: prom/node-exporter
@@ -105,9 +108,12 @@ services:
 
   mysql-hp-exporter:
     container_name: mysql-hp-exporter
-    image: prom/mysqld-exporter
-    environment:
-      DATA_SOURCE_NAME: "root:P4ssword!@(mysql-hp:3306)/" # Adjust credentials and MySQL host/port
+    image: quay.io/prometheus/mysqld-exporter
+    command:
+     - "--mysqld.username=root:P4ssword!"
+     - "--mysqld.address=mysql-hp:3306"
+    #environment:
+    #  DATA_SOURCE_NAME: "root:P4ssword!@(mysql-hp:3306)/" # Adjust credentials and MySQL host/port
     ports:
       - '9104:9104'
     depends_on:
