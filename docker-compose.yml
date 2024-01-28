@@ -29,6 +29,7 @@ services:
         KC_DB_USERNAME: root
         KC_DB_PASSWORD: P4ssword!
         KC_HEALTH_ENABLED: true
+        KC_METRICS_ENABLED: true
       depends_on:
         - mysql-hp
 
@@ -101,6 +102,16 @@ services:
       - token_volume:/app/tokens
     depends_on:
       - keycloak-hp
+
+  mysql-hp-exporter:
+    container_name: mysql-hp-exporter
+    image: prom/mysqld-exporter
+    environment:
+      DATA_SOURCE_NAME: "root:P4ssword!@(mysql-hp:3306)/" # Adjust credentials and MySQL host/port
+    ports:
+      - '9104:9104'
+    depends_on:
+      - mysql-hp
   
   my-app-test:
     build:
