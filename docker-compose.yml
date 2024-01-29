@@ -1,4 +1,4 @@
-version: '5.0.0'
+version: '5.0.9'
 services:
   mysql-hp:
     container_name: mysql-hp
@@ -18,8 +18,8 @@ services:
         - "start-dev"
         - "--hostname-port=8080"
       ports:
-        - "18080:8080"
-        - "18443:8443"
+        - "8080:8080"
+        #- "18443:8443"
       environment:
         KEYCLOAK_ADMIN: admin
         KEYCLOAK_ADMIN_PASSWORD: password
