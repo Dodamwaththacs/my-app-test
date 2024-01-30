@@ -1,4 +1,4 @@
-version: '5.0.9'
+version: 3'
 services:
   mysql-hp:
     container_name: mysql-hp
@@ -124,7 +124,7 @@ services:
       dockerfile: Dockerfile
     image: my-app-test:latest
     ports:
-        - 21001-21010:21001
+        - "21001"
     depends_on:
         - mysql-hp
         - keycloak-hp
