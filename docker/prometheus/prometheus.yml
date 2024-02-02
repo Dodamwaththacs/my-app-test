@@ -1,0 +1,47 @@
+global:
+    scrape_interval: 60s
+    evaluation_interval: 60s
+
+# Load and evaluate rules in this file every 'evaluation_interval' seconds.
+rule_files:
+  - "rule.yml"
+
+alerting:
+  alertmanagers:
+   - static_configs:
+     - targets:
+        - alert-manager:9093
+
+scrape_configs:
+    - job_name: 'prometheus'
+      static_configs:
+          - targets: ['host.docker.internal:9090']
+
+    - job_name: 'apps 1'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['my-app-test-1:21001']
+
+    - job_name: 'apps 2'
+      metrics_path: '/actuator/prometheus'
+      static_configs:
+        - targets: ['my-app-test-2:21001']
+# Sets the `Authorization` header on every scrape request with the bearer token
+# read from the configured file. It is mutually exclusive with `bearer_token`.
+      bearer_token_file: /app/tokens/token.txt
+    - job_name: node
+      static_configs:
+      - targets:
+        - node-exporter:9100
+    - job_name: 'keycloak'
+      scrape_interval: 5s
+      static_configs:
+        - targets: ['keycloak-hp:8080']
+
+    - job_name: 'mysql'
+      static_configs:
+        - targets: ['mysql-hp-exporter:9104'] # Replace 'mysql_host' with your MySQL container hostname/IP
+
+    - job_name: 'tempo'
+      static_configs:
+        - targets: ['my-app-test-tempo-1:14268']
