@@ -94,7 +94,7 @@ services:
         - GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
         - GF_AUTH_DISABLE_LOGIN_FORM=true
     ports:
-        - "3000:3000"
+        - "3001:3000"
 
   token_retrieval:
     build:
@@ -118,7 +118,34 @@ services:
       - '9104:9104'
     depends_on:
       - mysql-hp
-  
+
+#  ganache:
+#    image: trufflesuite/ganache-cli:latest
+#    ports:
+#      - "8545:8545"
+#
+#  ipfs:
+#    image: ipfs/go-ipfs:latest
+#    restart: always
+#    ports:
+#      - "4001:4001"
+#      - "5001:5001"
+#      - "8081:8080"
+#    volumes:
+#      - ipfs-data:/data/ipfs
+
+  storage_node:
+    image: ethereum/client-go:latest
+    environment:
+      - ETH_RPC_URL=http://ganache:8545
+      - IPFS_API_URL=http://ipfs:5001
+    depends_on:
+      - ganache
+      - ipfs
+    networks:
+      - my_network
+
+
   my-app-test-1:
     container_name: my-app-test-1
     build:
@@ -178,6 +205,18 @@ services:
     depends_on:
       - my-app-test-1
 
+  nginx-prometheus-exporter:
+    image: nginx/nginx-prometheus-exporter:latest
+    restart: unless-stopped
+    command:
+      - '-nginx.scrape-uri'
+      - 'http://nginx:10000/stub_status'  # Adjusted to match Nginx's listen port
+    ports:
+      - "9113:9113"
+    depends_on:
+      - nginx
+
+
 volumes:
     mysql_data:
       driver: local
@@ -190,3 +229,9 @@ volumes:
     token_volume:
       driver: local
 
+
+networks:
+  my_network:
+    driver: bridge
+
+#this is a test

@@ -16,6 +16,7 @@ scrape_configs:
     - job_name: 'prometheus'
       static_configs:
           - targets: ['host.docker.internal:9090']
+          - targets: ['nginx-prometheus-exporter:9113']
 
     - job_name: 'apps 1'
       metrics_path: '/actuator/prometheus'
@@ -45,3 +46,8 @@ scrape_configs:
     - job_name: 'tempo'
       static_configs:
         - targets: ['my-app-test-tempo-1:14268']
+
+
+    - job_name: 'nginx'
+      static_configs:
+        - targets: [ 'nginx-prometheus-exporter:9113' ]
