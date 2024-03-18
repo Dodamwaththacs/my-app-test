@@ -69,3 +69,8 @@ logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
+servlet:
+  multipart:
+    max-file-size: 50MB
+    max-request-size: 50MB
+    enabled: true
