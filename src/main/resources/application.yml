@@ -69,10 +69,13 @@ logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
-#ganache.url=http://localhost:7545
-#contract.address=0x806143c64034d7Ad6488d753497F10E04b9C0e3E
-
-ganache:
+servlet:
+  multipart:
+    max-file-size: 50MB
+    max-request-size: 50MB
+    enabled: true
+    
+ ganache:
   url: "http://my-app-test-ganache-1:8545"
 
 contract:

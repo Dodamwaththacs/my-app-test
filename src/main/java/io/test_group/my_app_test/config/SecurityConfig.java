@@ -54,7 +54,7 @@ public class SecurityConfig {
                         // .hasAnyAuthority(ROLE_USER, ROLE_ADMIN)
                         .anyRequest()
                         //.permitAll())
-                        .authenticated())
+                          .authenticated())
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()));
         //log.info("RBAC for API removed for testing prometheus."); HFvkjVaPEYu5H0MY32rxzg90OkB44aut
 

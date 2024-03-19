@@ -1,4 +1,4 @@
-version: 3'
+version: '3.4'
 services:
   mysql-hp:
     container_name: mysql-hp
@@ -181,6 +181,12 @@ services:
         - alert-manager
         - tempo
         - token_retrieval
+        - ipfs0
+        - cluster0
+        - ipfs1
+        - cluster1
+        - ipfs2
+        - cluster2
 
 #    my-app-test-2:
 #      container_name: my-app-test-2
@@ -220,54 +226,93 @@ services:
     depends_on:
       - nginx
 
-#  ca.example.com:
-#    image: hyperledger/fabric-ca
-#    container_name: ca.example.com
-#    environment:
-#      - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
-#      - FABRIC_CA_SERVER_CA_NAME=ca.example.com
-#      - FABRIC_CA_SERVER_TLS_ENABLED=true
-#      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
-#      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY.pem
-#    ports:
-#      - "7054:7054"
-#    volumes:
-#      - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
-#
-#  orderer.example.com:
-#      container_name: orderer.example.com
-#      image: hyperledger/fabric-orderer
-#      environment:
-#        - ORDERER_GENERAL_LOGLEVEL=info
-#        - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
-#        - ORDERER_GENERAL_GENESISMETHOD=file
-#        - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
-#        - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
-#        - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
-#      command: orderer
-#      ports:
-#        - "7050:7050"
-#      volumes:
-#        - ./channel-artifacts/:/var/hyperledger/orderer
-#        - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/:/var/hyperledger/orderer/msp
-#
-#  peer0.org1.example.com:
-#      container_name: peer0.org1.example.com
-#      image: hyperledger/fabric-peer
-#      environment:
-#        - CORE_PEER_ID=peer0.org1.example.com
-#        - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
-#        - CORE_PEER_LOCALMSPID=Org1MSP
-#        - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
-#      ports:
-#        - "7051:7051"
-#      volumes:
-#        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/:/etc/hyperledger/fabric/msp
-#      depends_on:
-#        - orderer.example.com
+#----------------------IPFS-------------------------
+  ipfs0:
+    container_name: ipfs0
+    image: ipfs/kubo:release
+    ports:
+      - "4001:4001" # ipfs swarm - expose if needed/wanted
+      - "5001:5001" # ipfs api - expose if needed/wanted
+      - "8070:8070" # ipfs gateway - expose if needed/wanted
+    volumes:
+      - ./compose/ipfs0:/data/ipfs
 
+  cluster0:
+    container_name: cluster0
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs0
+    environment:
+      CLUSTER_PEERNAME: cluster0
+      CLUSTER_SECRET: ${CLUSTER_SECRET} # From shell variable if set
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs0/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*' # Trust all peers in Cluster
+      CLUSTER_RESTAPI_HTTPLISTENMULTIADDRESS: /ip4/0.0.0.0/tcp/9094 # Expose API
+      CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+    ports:
+      # Open API port (allows ipfs-cluster-ctl usage on host)
+      - "127.0.0.1:9094:9094"
+      # The cluster swarm port would need  to be exposed if this container
+      # was to connect to cluster peers on other hosts.
+      # But this is just a testing cluster.
+      - "9095:9095" # Cluster IPFS Proxy endpoint
+      - "9096:9096" # Cluster swarm endpoint
+    volumes:
+      - ./compose/cluster0:/data/ipfs-cluster
+
+  ##################################################################################
+  ## Cluster PEER 1 ################################################################
+  ##################################################################################
+
+  # See Cluster PEER 0 for comments (all removed here and below)
+  ipfs1:
+    container_name: ipfs1
+    image: ipfs/kubo:release
+    volumes:
+      - ./compose/ipfs1:/data/ipfs
+
+  cluster1:
+    container_name: cluster1
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs1
+    environment:
+      CLUSTER_PEERNAME: cluster1
+      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs1/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*'
+      CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+    volumes:
+      - ./compose/cluster1:/data/ipfs-cluster
+
+  ##################################################################################
+  ## Cluster PEER 2 ################################################################
+  ##################################################################################
+
+  # See Cluster PEER 0 for comments (all removed here and below)
+  ipfs2:
+    container_name: ipfs2
+    image: ipfs/kubo:release
+    volumes:
+      - ./compose/ipfs2:/data/ipfs
+
+  cluster2:
+    container_name: cluster2
+    image: ipfs/ipfs-cluster:latest
+    depends_on:
+      - ipfs2
+    environment:
+      CLUSTER_PEERNAME: cluster2
+      CLUSTER_SECRET: ${CLUSTER_SECRET}
+      CLUSTER_IPFSHTTP_NODEMULTIADDRESS: /dns4/ipfs2/tcp/5001
+      CLUSTER_CRDT_TRUSTEDPEERS: '*'
+      CLUSTER_MONITORPINGINTERVAL: 2s # Speed up peer discovery
+    volumes:
+      - ./compose/cluster2:/data/ipfs-cluster
+#----------------------IPFS-------------------------
 
 volumes:
+
     mysql_data:
       driver: local
     grafana_data:
@@ -278,6 +323,7 @@ volumes:
       driver: local
     token_volume:
       driver: local
+
 
 
 networks:
