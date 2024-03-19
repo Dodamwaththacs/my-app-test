@@ -35,7 +35,7 @@ build/
 
 ### VS Code ###
 .vscode/
-
+compose
 compose/cluster0
 compose/cluster1
 compose/cluster2
