@@ -119,11 +119,15 @@ services:
     depends_on:
       - mysql-hp
 
-#  ganache:
-#    image: trufflesuite/ganache-cli:latest
-#    ports:
-#      - "8545:8545"
-#
+
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    command: [ "--db", "/ganache_data", "--mnemonic", "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat", "--chainId", "1337" ]
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./ganache_data:/ganache_data
+
 #  ipfs:
 #    image: ipfs/go-ipfs:latest
 #    restart: always
@@ -134,16 +138,16 @@ services:
 #    volumes:
 #      - ipfs-data:/data/ipfs
 
-  storage_node:
-    image: ethereum/client-go:latest
-    environment:
-      - ETH_RPC_URL=http://ganache:8545
-      - IPFS_API_URL=http://ipfs:5001
-    depends_on:
-      - ganache
-      - ipfs
-    networks:
-      - my_network
+#  storage_node:
+#    image: ethereum/client-go:latest
+#    environment:
+#      - ETH_RPC_URL=http://ganache:8545
+#      - IPFS_API_URL=http://ipfs:5001
+#    depends_on:
+#      - ganache
+#      - ipfs
+#    networks:
+#      - my_network
 
 
   my-app-test-1:
@@ -215,6 +219,52 @@ services:
       - "9113:9113"
     depends_on:
       - nginx
+
+#  ca.example.com:
+#    image: hyperledger/fabric-ca
+#    container_name: ca.example.com
+#    environment:
+#      - FABRIC_CA_SERVER_HOME=/etc/hyperledger/fabric-ca-server
+#      - FABRIC_CA_SERVER_CA_NAME=ca.example.com
+#      - FABRIC_CA_SERVER_TLS_ENABLED=true
+#      - FABRIC_CA_SERVER_TLS_CERTFILE=/etc/hyperledger/fabric-ca-server-config/ca.org1.example.com-cert.pem
+#      - FABRIC_CA_SERVER_TLS_KEYFILE=/etc/hyperledger/fabric-ca-server-config/CA1_PRIVATE_KEY.pem
+#    ports:
+#      - "7054:7054"
+#    volumes:
+#      - ./crypto-config/peerOrganizations/org1.example.com/ca/:/etc/hyperledger/fabric-ca-server-config
+#
+#  orderer.example.com:
+#      container_name: orderer.example.com
+#      image: hyperledger/fabric-orderer
+#      environment:
+#        - ORDERER_GENERAL_LOGLEVEL=info
+#        - ORDERER_GENERAL_LISTENADDRESS=0.0.0.0
+#        - ORDERER_GENERAL_GENESISMETHOD=file
+#        - ORDERER_GENERAL_GENESISFILE=/var/hyperledger/orderer/orderer.genesis.block
+#        - ORDERER_GENERAL_LOCALMSPID=OrdererMSP
+#        - ORDERER_GENERAL_LOCALMSPDIR=/var/hyperledger/orderer/msp
+#      command: orderer
+#      ports:
+#        - "7050:7050"
+#      volumes:
+#        - ./channel-artifacts/:/var/hyperledger/orderer
+#        - ./crypto-config/ordererOrganizations/example.com/orderers/orderer.example.com/:/var/hyperledger/orderer/msp
+#
+#  peer0.org1.example.com:
+#      container_name: peer0.org1.example.com
+#      image: hyperledger/fabric-peer
+#      environment:
+#        - CORE_PEER_ID=peer0.org1.example.com
+#        - CORE_PEER_ADDRESS=peer0.org1.example.com:7051
+#        - CORE_PEER_LOCALMSPID=Org1MSP
+#        - CORE_PEER_MSPCONFIGPATH=/etc/hyperledger/fabric/msp
+#      ports:
+#        - "7051:7051"
+#      volumes:
+#        - ./crypto-config/peerOrganizations/org1.example.com/peers/peer0.org1.example.com/:/etc/hyperledger/fabric/msp
+#      depends_on:
+#        - orderer.example.com
 
 
 volumes:

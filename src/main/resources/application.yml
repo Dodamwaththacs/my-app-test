@@ -69,3 +69,11 @@ logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
 
+#ganache.url=http://localhost:7545
+#contract.address=0x806143c64034d7Ad6488d753497F10E04b9C0e3E
+
+ganache:
+  url: "http://my-app-test-ganache-1:8545"
+
+contract:
+  address: "0xf12b5dd4ead5f743c6baa640b0216200e89b60da"
