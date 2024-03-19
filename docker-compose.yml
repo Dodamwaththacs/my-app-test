@@ -119,11 +119,15 @@ services:
     depends_on:
       - mysql-hp
 
-#  ganache:
-#    image: trufflesuite/ganache-cli:latest
-#    ports:
-#      - "8545:8545"
-#
+
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    command: [ "--db", "/ganache_data", "--mnemonic", "candy maple cake sugar pudding cream honey rich smooth crumble sweet treat", "--chainId", "1337" ]
+    ports:
+      - "8545:8545"
+    volumes:
+      - ./ganache_data:/ganache_data
+
 #  ipfs:
 #    image: ipfs/go-ipfs:latest
 #    restart: always

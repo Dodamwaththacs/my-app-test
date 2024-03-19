@@ -74,3 +74,9 @@ servlet:
     max-file-size: 50MB
     max-request-size: 50MB
     enabled: true
+    
+ ganache:
+  url: "http://my-app-test-ganache-1:8545"
+
+contract:
+  address: "0xf12b5dd4ead5f743c6baa640b0216200e89b60da"
