@@ -31,6 +31,7 @@ public class IPFSService implements FileServiceImpl {
             MerkleNode response = ipfs.add(file).get(0);
             System.out.println("Hash (base 58): " + response.hash.toBase58());
             return response.hash.toBase58();
+
         } catch (IOException ex) {
             throw new RuntimeException("Error whilst communicating with the IPFS node", ex);
         }

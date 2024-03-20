@@ -9,6 +9,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 public class IPFSController {
 
@@ -23,7 +26,10 @@ public class IPFSController {
     @PostMapping("/upload")
     public String uploadFile(@RequestParam("file") MultipartFile file) {
         System.out.println("Received request for file upload");
-        return ipfsService.saveFile(file);
+        return "This is the hash" + ipfsService.saveFile(file);
+
+
+
     }
 
     @GetMapping("/file/{hash}")
