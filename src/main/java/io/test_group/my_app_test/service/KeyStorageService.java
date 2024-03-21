@@ -19,8 +19,8 @@ public class KeyStorageService {
         return keyStorageRepository.save(keyStorage);
     }
 
-    public KeyStorage getKeyStorage(Long id) {
-        return keyStorageRepository.findById(id).orElse(null);
+    public KeyStorage getKeyStorage(String username) {
+        return keyStorageRepository.findByUsername(username);
     }
 
     // Other business logic methods can be added here

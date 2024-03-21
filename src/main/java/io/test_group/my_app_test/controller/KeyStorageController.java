@@ -5,6 +5,9 @@ import io.test_group.my_app_test.service.KeyStorageService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/key-storage")
 public class KeyStorageController {
@@ -20,11 +23,15 @@ public class KeyStorageController {
         KeyStorage savedKeyStorage = keyStorageService.saveKeyStorage(keyStorage);
         return ResponseEntity.ok(savedKeyStorage);
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<KeyStorage> getKeyStorage(@PathVariable Long id) {
-        KeyStorage keyStorage = keyStorageService.getKeyStorage(id);
-        return ResponseEntity.ok(keyStorage);
+    @GetMapping("/{username}")
+    public ResponseEntity<Map<String, String>> getKeyStorage(@PathVariable String username) {
+        KeyStorage keyStorage = keyStorageService.getKeyStorage(username);
+        Map<String, String> response = new HashMap<>();
+        response.put("username", keyStorage.getUsername());
+        response.put("encryptionKey", keyStorage.getEncryptionKey());
+        return ResponseEntity.ok(response);
     }
+
 
     // Other API endpoints can be added here
 }

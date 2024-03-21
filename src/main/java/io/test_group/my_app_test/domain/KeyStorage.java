@@ -23,14 +23,10 @@ public class KeyStorage {
 
     @Id
     @Column(nullable = false, updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private String username;
 
     @Column(nullable = false, unique = true)
-    private String privateKey;
-
-    @Column(nullable = false, unique = true)
-    private String publicKey;
+    private String encryptionKey;
 
 //    @CreatedDate
 //    @Column(nullable = true, updatable = false)
